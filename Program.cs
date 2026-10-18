@@ -1,132 +1,43 @@
 using System;
-using System.Collections.Generic;
 
 class Program
 {
     static void Main()
     {
-        var ekipmanlar = new List<Ekipman>
+        string demirbasNo = "LAB-001";
+        bool oduncte = false;
+        decimal bedel = 1250.50m;
+        var adet = 2;
+        const int AzamiGun = 7;
+        Console.WriteLine($"{demirbasNo}, bedel: {bedel}, adet: {adet}");
+        Console.WriteLine($"7 / 2 = {7 / 2}; ondalıklı: {(double)7 / 2}");
+
+        Console.Write("Kaç gün? ");
+        string? giris = Console.ReadLine();
+        if (!int.TryParse(giris, out int gun) || gun < 1 || gun > AzamiGun)
         {
-            new Ekipman("LAB-001", "Kamera"),
-            new Ekipman("LAB-002", "Mikrofon"),
-            new Ekipman("LAB-003", "Elektronik kit")
-        };
-
-        var ogrenciler = new List<Ogrenci>
-        {
-            new Ogrenci("1001", "Örnek Öğrenci A"),
-            new Ogrenci("1002", "Örnek Öğrenci B")
-        };
-
-        while (true)
-        {
-            Console.WriteLine("\n1 Listele | 2 Ödünç ver | 3 İade al | 4 Müsait ekipmanlar | 0 Çıkış");
-            Console.Write("Seçim: ");
-            string? secim = Console.ReadLine();
-            if (secim == null)
-                return;
-
-            switch (secim.Trim())
-            {
-                case "1":
-                    Listele(ekipmanlar);
-                    break;
-                case "2":
-                    OduncIslemi(ekipmanlar, ogrenciler);
-                    break;
-                case "3":
-                    IadeIslemi(ekipmanlar);
-                    break;
-                case "4":
-                    MusaitEkipmanlariListele(ekipmanlar);
-                    break;
-                case "0":
-                    return;
-                default:
-                    Console.WriteLine("Geçersiz seçim.");
-                    break;
-            }
-        }
-    }
-
-    static void Listele(List<Ekipman> liste)
-    {
-        foreach (Ekipman ekipman in liste)
-        {
-            string durum = ekipman.Oduncte
-                ? $"Ödünçte ({ekipman.OduncAlanNo})"
-                : "Müsait";
-            Console.WriteLine($"{ekipman.DemirbasNo} - {ekipman.Ad} - {durum}");
-        }
-    }
-
-    static void MusaitEkipmanlariListele(List<Ekipman> liste)
-    {
-        foreach (Ekipman ekipman in liste)
-        {
-            if (!ekipman.Oduncte)
-            {
-                Console.WriteLine($"{ekipman.DemirbasNo} - {ekipman.Ad} - Müsait");
-            }
-        }
-    }
-
-    static Ekipman? EkipmanBul(List<Ekipman> liste, string no)
-    {
-        foreach (Ekipman e in liste)
-            if (e.DemirbasNo == no) return e;
-        return null;
-    }
-
-    static Ogrenci? OgrenciBul(List<Ogrenci> liste, string no)
-    {
-        foreach (Ogrenci o in liste)
-            if (o.Numara == no) return o;
-        return null;
-    }
-
-    static void OduncIslemi(List<Ekipman> ekipmanlar, List<Ogrenci> ogrenciler)
-    {
-        Console.Write("Demirbaş no: ");
-        string? no = Console.ReadLine();
-        if (no == null) return;
-
-        Ekipman? bulunan = EkipmanBul(ekipmanlar, no.Trim().ToUpperInvariant());
-        if (bulunan == null)
-        {
-            Console.WriteLine("Ekipman bulunamadı.");
+            Console.WriteLine("1-7 arası sayı girin.");
             return;
         }
 
-        Console.Write("Öğrenci no (1001 veya 1002): ");
-        string? ogrenciNo = Console.ReadLine();
-        if (ogrenciNo == null) return;
+        bool sonuc = OduncUygunMu(oduncte, gun);
+        Console.WriteLine(sonuc ? "Ödünç verilebilir." : "Talep uygun değil.");
 
-        Ogrenci? ogrenci = OgrenciBul(ogrenciler, ogrenciNo.Trim());
-        if (ogrenci == null)
-        {
-            Console.WriteLine("Öğrenci bulunamadı.");
-            return;
-        }
+        int once = gun;
+        Arttir(gun);
+        Console.WriteLine($"Arttir çağrısından sonra gun: {gun}; önce: {once}");
 
-        bool sonuc = bulunan.OduncVer(ogrenci.Numara);
-        Console.WriteLine(sonuc ? "Ödünç verildi." : "Ekipman zaten ödünçte.");
+        for (int i = 0; i < 3; i++)
+            Console.WriteLine($"Tur: {i}");
     }
 
-    static void IadeIslemi(List<Ekipman> ekipmanlar)
+    static bool OduncUygunMu(bool oduncte, int gun)
     {
-        Console.Write("Demirbaş no: ");
-        string? no = Console.ReadLine();
-        if (no == null) return;
+        return !oduncte && gun >= 1 && gun <= 7;
+    }
 
-        Ekipman? bulunan = EkipmanBul(ekipmanlar, no.Trim().ToUpperInvariant());
-        if (bulunan == null)
-        {
-            Console.WriteLine("Ekipman bulunamadı.");
-            return;
-        }
-
-        Console.WriteLine(bulunan.IadeAl()
-            ? "İade alındı." : "Ekipman zaten müsait.");
+    static void Arttir(int gun)
+    {
+        gun++;
     }
 }
